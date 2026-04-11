@@ -1,218 +1,210 @@
-# 🏟️ Desafio de Engenharia de Dados
+# Desafio Técnico de Engenharia de Dados
 
-> **RETIZE SPORTS MEDIA NETWORK** · Social Media Analytics Case
->
-> 📅 Prazo: 7 dias · 📬 Entrega: GitHub · 🌐 [retize.com.br](https://retize.com.br)
+## Sobre a Retize
 
----
+Você acaba de ingressar no time de Engenharia de Dados da [Retize](https://retize.com.br). Parte do nosso trabalho envolve consolidar dados de performance de redes sociais para permitir análises comparáveis entre plataformas, formatos de conteúdo e contas.
 
-## 📖 O Contexto
+## Nossa Stack
 
-Você acaba de ingressar no time de Engenharia de Dados da Retize. Nossos clientes publicam conteúdo em múltiplas plataformas de redes sociais e precisam entender seu desempenho de forma consolidada.
+Na Retize, usamos PostgreSQL para cargas e consultas operacionais, BigQuery para análise em escala, Airflow para orquestrar pipelines, dlt para extrair e carregar dados de fontes externas e dbt para organizar transformações analíticas.
 
-Extraímos uma amostra bruta desses dados em dois arquivos CSV. Sua missão é construir uma solução reproduzível de ponta a ponta: da ingestão desses dados até a criação de um modelo analítico em **star schema** capaz de responder a perguntas de negócio sobre alcance, engajamento e sentimento de comentários.
+## Sobre o Desafio
 
----
+O foco deste desafio está em fundamentos de Python e SQL aplicados localmente com PostgreSQL.
 
-## 🗂️ Os Dados Fornecidos
+Você receberá arquivos CSV com uma amostra de dados brutos de Instagram e TikTok já extraída das plataformas. A proposta é construir uma solução reproduzível, da carga inicial dos arquivos até um modelo analítico capaz de responder a perguntas de negócio sobre alcance, engajamento e sentimento de comentários.
 
-Os arquivos serão fornecidos junto ao envio deste desafio:
+Você trabalhará com dados imperfeitos do mundo real. Esperamos uma solução clara, correta, bem justificada e fácil de executar.
 
-| Arquivo | Descrição |
-|---|---|
-| `posts.csv` | Postagens de redes sociais com métricas de alcance e engajamento |
-| `comments.csv` | Comentários enriquecidos com análise de sentimento |
+## Dados Fornecidos
 
-> **Atenção:** espere encontrar atritos do mundo real. Formatos de data podem divergir, algumas linhas podem estar sujas e tipos de mídia variam por plataforma.
+Os arquivos serão enviados junto com o desafio:
 
----
+- `instagram_media.csv`
+- `instagram_media_insights.csv`
+- `instagram_comments.csv`
+- `tiktok_posts.csv`
+- `tiktok_comments.csv`
 
-## 🏗️ Arquitetura Esperada
+Os comentários já virão enriquecidos com classificação de sentimento.
 
-```mermaid
-flowchart TD
-    A["📁 posts.csv + comments.csv"]
-    B["🔌 API REST ou Script CLI"]
-    C[("🗄️ PostgreSQL — raw")]
-    D["⚙️ dbt — staging / intermediate / marts"]
-    E["⭐ Star Schema"]
-    F["🔍 10 Queries SQL"]
+Estamos disponibilizando neste repositório um dicionário de dados com as colunas disponíveis em cada tabela (dicionario.md).
 
-    A -->|upload| B
-    B -->|load| C
-    C -->|transform| D
-    D -->|model| E
-    E -->|query| F
+## Objetivo do Desafio
 
-    style D fill:#6B2FFF,color:#fff,stroke:#6B2FFF
-    style E fill:#ede9ff,stroke:#6B2FFF,color:#1a1a2e
-```
+Sua solução deve:
 
----
+1. Carregar os arquivos CSV em tabelas brutas no PostgreSQL.
+2. Tratar as inconsistências mínimas necessárias para tornar os dados utilizáveis.
+3. Construir um modelo analítico que permita responder às perguntas de negócio abaixo.
+4. Entregar as consultas SQL e a documentação necessária para reproduzir o resultado.
 
-## 🛠️ Escopo Esperado
+## Ambiente
 
-### Parte 1 — Ingestão dos Dados
+Use PostgreSQL como banco local da solução.
 
-Desenvolva uma forma reproduzível de receber e carregar os arquivos CSV no banco de dados. A ingestão pode ser feita por meio de uma **API simples** ou um **script/CLI bem documentado**.
+O banco deve ser executado com Docker Compose.
 
-**Requisitos obrigatórios:**
+## Escopo Esperado
 
-- A solução deve permitir o carregamento dos dois arquivos CSV
-- Os dados devem ser carregados em tabelas iniciais no banco escolhido
-- A execução deve estar documentada de forma clara
-- A ingestão deve informar sucesso ou erro durante a execução
+### Parte 1. Ingestão dos dados
 
-**Observações:**
+Desenvolva uma forma reproduzível de carregar os arquivos CSV brutos em tabelas iniciais.
 
-- Não é necessário criar endpoints para consultas analíticas
-- As respostas analíticas serão entregues como arquivos `.sql` no repositório
-- Disponibilizar a ingestão por meio de uma API será considerado um diferencial
+Esperamos nesta etapa:
 
----
+- um ou mais scripts em Python para automatizar a carga dos arquivos
+- instruções claras de execução
+- tratamento básico de erros
+- indicação de sucesso ou falha durante a carga
 
-### Parte 2 — Modelagem e Transformação
+### Parte 2. Transformação e modelagem
 
-Após a ingestão, os dados devem ser transformados com **dbt** (ou ferramenta similar) até chegarem a um modelo dimensional em **star schema**.
+Após a ingestão, transforme os dados com SQL até chegar a um modelo analítico adequado para responder às perguntas de negócio.
 
-Os dados devem ser criados em um banco relacional local. Você pode utilizar **PostgreSQL** ou **SQLite**, desde que documente sua escolha. PostgreSQL será considerado a opção preferencial por aderência ao contexto do desafio.
+Você pode organizar essa etapa da forma que considerar mais apropriada. Vale usar apenas SQL ou ferramentas como `dbt`, se desejar. O uso de `dbt` é bem-vindo, mas não é obrigatório.
 
-**Esperado nesta etapa:**
+Esperamos nesta etapa:
 
-- Definição clara da granularidade das tabelas
-- Separação coerente entre fatos e dimensões
-- Relacionamento consistente entre postagens e comentários
-- Organização da transformação em etapas compreensíveis
-- Estrutura final adequada para responder às perguntas de negócio
+- definição clara do nível de detalhe de cada tabela final
+- joins coerentes entre as tabelas de conteúdo, métricas e comentários
+- padronização mínima de métricas entre Instagram e TikTok
+- decisões de modelagem compatíveis com as perguntas analíticas
+- documentação das principais escolhas e simplificações
 
-**Boas práticas esperadas:**
+Se for necessário definir uma fórmula de engajamento ou harmonizar métricas entre plataformas, explique essa escolha no README.
 
-- Camadas organizadas — por exemplo: `raw`, `staging`, `intermediate` e `marts`
-- Nomenclatura consistente
-- Tratamento de tipos de dados
-- Cuidado com chaves e relacionamentos
-- Documentação mínima dos modelos
-- Testes de qualidade, quando fizer sentido
+Preferimos um modelo analítico bem pensado e bem justificado a uma arquitetura mais complexa do que o necessário.
 
----
+## Organização Sugerida
 
-## ❓ Perguntas de Negócio
+Você não precisa seguir exatamente a estrutura abaixo, mas sugerimos uma organização mínima para facilitar a avaliação:
 
-Sua solução deve permitir responder obrigatoriamente às 10 perguntas abaixo com queries SQL:
+- `src/` para scripts Python de ingestão e apoio
+- `sql/` ou `transformations/` para scripts SQL de transformação, caso não use `dbt`
+- `dbt/` para o projeto, caso opte por usar `dbt`
+- `queries/` para as consultas finais que respondem às perguntas de negócio
+- `README.md` com instruções de execução e decisões técnicas
 
-| # | Pergunta |
-|---|---|
-| 1 | Qual foi a quantidade total de postagens por plataforma ao longo do período analisado? |
-| 2 | Qual foi a quantidade total de postagens por tipo de mídia e por plataforma? |
-| 3 | Quais foram os 10 posts com maior alcance no período? |
-| 4 | Quais foram os 10 posts com maior taxa de engajamento no período? |
-| 5 | Como o volume de comentários evoluiu ao longo do tempo por plataforma? |
-| 6 | Quais tipos de mídia apresentaram melhor desempenho médio em alcance, curtidas, comentários e compartilhamentos? |
-| 7 | Quais posts concentraram maior volume de comentários e como isso se compara com seu alcance e engajamento? |
-| 8 | Existe diferença de desempenho por dia da semana e por horário de publicação, considerando alcance, engajamento e comentários? |
-| 9 | Quais contas e posts tiveram maior negatividade de comentários? |
-| 10 | Quais formatos e tipos de mídia (imagem ou vídeo) possuem maiores índices de positividade ou negatividade em seus comentários? |
+Se fizer sentido para sua solução, sugerimos também separar tabelas ou etapas em camadas com convenções como:
 
----
+- `raw_*` para carga inicial dos CSVs
+- `stg_*` para padronização e limpeza
+- `mart_*` para tabelas ou views analíticas finais
 
-## 📦 Entregáveis Obrigatórios
+Essas convenções são apenas sugestões. Você pode adotar outra organização, desde que ela seja clara e consistente.
+
+## Perguntas de Negócio
+
+Sua solução deve responder obrigatoriamente às 5 perguntas abaixo com SQL:
+
+1. Para cada conta, qual é o melhor dia da semana para publicar, considerando o engajamento médio por conteúdo?
+2. Para cada conta, qual plataforma apresentou a maior proporção de comentários negativos no período analisado?
+3. Quais são os 10 conteúdos com maior taxa de engajamento no período, considerando Instagram e TikTok?
+4. Quais são os 3 conteúdos com maior taxa de engajamento por conta no período, considerando Instagram e TikTok?
+5. Para cada conta, qual formato de conteúdo apresenta o melhor desempenho médio de engajamento?
+
+## Entregáveis
 
 ### 1. Repositório no GitHub
+
 Repositório público com todo o código da solução.
 
 ### 2. README
-O repositório deve explicar de forma objetiva:
 
-- Visão geral da solução
-- Arquitetura proposta
-- Como subir o ambiente
-- Como executar a ingestão
-- Como rodar as transformações
-- Como executar as queries
-- Decisões técnicas principais
-- Limitações ou melhorias futuras
+O README do repositório deve explicar de forma objetiva:
 
-### 3. Modelagem de Dados
-Inclua um diagrama ou representação do modelo proposto, contendo:
+- visão geral da solução
+- arquitetura ou fluxo adotado
+- como preparar o ambiente
+- como subir o PostgreSQL com Docker Compose
+- como executar a ingestão
+- como executar as transformações
+- como rodar as queries
+- principais decisões técnicas
+- justificativas para escolhas de modelagem e tecnologia
+- limitações, premissas e melhorias futuras
 
-- Tabelas principais
-- Chaves e relacionamentos
-- Granularidade esperada
+### 3. Modelagem de dados
 
-Pode ser MER, diagrama dimensional ou ambos.
+Inclua uma representação simples do modelo proposto, contendo:
 
-### 4. Projeto dbt (ou equivalente)
-Com os modelos e transformações usados para levar os dados brutos até o schema analítico final.
+- tabelas principais
+- granularidade
+- principais relacionamentos
 
-### 5. Queries Analíticas
-Arquivos `.sql` respondendo às 10 perguntas de negócio.
+Pode ser um diagrama MER, um esquema em texto ou ambos.
 
-### 6. Documentação da API
-Pode ser no README, collection do Postman ou documentação em Markdown.
+### 4. Queries analíticas
 
----
+Arquivos `.sql` respondendo às 5 perguntas de negócio.
 
-## 🏆 Critérios de Avaliação
+## Critérios de Avaliação
 
-**O que vamos avaliar:**
+O que vamos avaliar:
 
-- Qualidade da modelagem de dados e coerência do modelo analítico proposto
-- Organização da camada de transformação com dbt ou ferramenta similar
-- Qualidade da ingestão e da estrutura técnica da solução
-- Capacidade de responder corretamente às perguntas de negócio com SQL
-- Clareza da documentação e reprodutibilidade do projeto
+- corretude da carga e reprodutibilidade da solução
+- clareza, organização e legibilidade do código Python
+- qualidade, correção e legibilidade do SQL
+- coerência entre granularidade, modelagem e perguntas de negócio
+- capacidade de lidar com inconsistências entre fontes sem complexidade desnecessária
+- capacidade de justificar decisões e trade-offs de forma objetiva
+- clareza da documentação e facilidade de execução da solução
 
-**Diferenciais (bonus points):**
+## Diferenciais
 
-- 🐳 Docker Compose com toda a stack subindo com um único comando
-- 🚀 Deploy da aplicação ou parte da solução (Render, Railway, Fly.io etc.)
-- ✅ Validações adicionais de qualidade de dados além dos testes padrão do dbt
-- 📋 Logging estruturado e instruções claras de troubleshooting
-- ⚡ Experiência de execução simples e reproduzível
+Os itens abaixo são diferenciais, não obrigatórios.
 
----
+Diferenciais de engenharia de dados:
 
-## 🤖 Política de Uso de Inteligência Artificial
+- uso de `dbt` para organizar transformações e testes
+- orquestração simples do fluxo de ingestão e transformação
+- conteinerização adicional da solução além do PostgreSQL com Docker Compose
+- testes ou validações de qualidade de dados
+- logging estruturado
+- documentação especialmente clara de troubleshooting e decisões de modelagem
 
-O uso de ferramentas de IA **é permitido** neste desafio.
+Diferenciais de apresentação:
 
-**Uso recomendado:**
-- Apoio para debugging
-- Revisão de código
-- Esclarecimento de conceitos técnicos
-- Apoio na escrita de documentação
-- Geração de dados mockados ou exemplos locais
+- uma forma simples de apresentação dos dados finais, como um dashboard em Streamlit ou uma API com um endpoint de resumo
 
-**Uso não recomendado:**
-- Delegar à IA a construção integral da solução
-- Copiar código sem revisar, adaptar e compreender
-- Entregar decisões técnicas que você não consiga justificar
+## Política de Uso de Inteligência Artificial
 
-> **Transparência:** se você usar IA de forma relevante, inclua no README um pequeno resumo explicando como ela foi utilizada. Não é obrigatório, mas será visto de forma positiva.
+O uso de ferramentas de IA é permitido neste desafio.
+
+Uso recomendado:
+
+- apoio para debugging
+- revisão de código
+- esclarecimento de conceitos técnicos
+- apoio na escrita de documentação
+
+Uso não recomendado:
+
+- delegar à IA a construção integral da solução
+- copiar código sem revisar, adaptar e compreender
+- entregar decisões técnicas que você não consiga justificar
+
+Se você usar IA de forma relevante, pode incluir no README um breve resumo de como ela foi utilizada. Isso não é obrigatório, mas é bem-vindo.
 
 A solução entregue deve refletir sua capacidade de engenharia e tomada de decisão. Durante a conversa sobre o desafio, esperamos que você consiga explicar e defender as escolhas feitas.
 
----
+## Prazo de Entrega
 
-## ⏱️ Prazo de Entrega
+- 7 dias corridos a partir do recebimento do desafio
 
-**1 semana** a partir do recebimento oficial do desafio.
+## Forma de Envio
 
-## 📬 Forma de Envio
+- repositório público no GitHub
+- envio do link do repositório para `desafio.tech@retize.com.br`
+- sugestão de assunto do e-mail: `Desafio Técnico | Engenheiro(a) de Dados | [Seu Nome]`
 
-- Repositório **público** no GitHub
-- Envio do link para **desafios.tech@retize.com.br**
+## Orientações Finais
 
----
+Busque uma solução simples, clara e reproduzível.
 
-## 🧭 Orientações Finais
+Priorize correção, clareza e a capacidade de justificar suas escolhas.
 
-Busque uma solução clara, organizada e reproduzível.
+Se precisar assumir simplificações, documente essas decisões no repositório.
 
-Se precisar assumir simplificações, documente essas escolhas no repositório. Também é válido registrar melhorias que você implementaria em uma próxima versão.
-
-Boa sorte! 🚀
-
----
-
-*© 2026 Retize Sports Media Network · [retize.com.br](https://retize.com.br)*
+Também é válido registrar melhorias que você implementaria em uma próxima versão.
