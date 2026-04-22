@@ -196,7 +196,7 @@ A solução entregue deve refletir sua capacidade de engenharia e tomada de deci
 ## Forma de Envio
 
 - repositório público no GitHub
-- envio do link do repositório para `desafio.tech@retize.com.br`
+- envio do link do repositório para `desafios.tech@retize.com.br`
 - sugestão de assunto do e-mail: `Desafio Técnico | Engenheiro(a) de Dados | [Seu Nome]`
 
 ## Orientações Finais
